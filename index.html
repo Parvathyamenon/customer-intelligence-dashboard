@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Intelligence Dashboard · Parvathy Menon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --bg-secondary: #f7f6f3;
+      --bg-tertiary: #f0efe9;
+      --text-primary: #1a1a18;
+      --text-secondary: #6b6a65;
+      --text-tertiary: #9e9d98;
+      --border: rgba(0,0,0,0.10);
+      --border-mid: rgba(0,0,0,0.18);
+      --green: #1D9E75;
+      --green-light: #E1F5EE;
+      --green-mid: #9FE1CB;
+      --green-dark: #0F6E56;
+      --green-deeper: #085041;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1c1c1a;
+        --bg-secondary: #252523;
+        --bg-tertiary: #2e2e2b;
+        --text-primary: #f0efe9;
+        --text-secondary: #9e9d98;
+        --text-tertiary: #6b6a65;
+        --border: rgba(255,255,255,0.10);
+        --border-mid: rgba(255,255,255,0.18);
+        --green-light: #04342C;
+        --green-mid: #085041;
+        --green-dark: #5DCAA5;
+        --green-deeper: #9FE1CB;
+      }
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+
+    /* ── Hero ─────────────────────────────────────── */
+    .hero {
+      border-bottom: 0.5px solid var(--border);
+      padding-bottom: 2.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 52px;
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--green);
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      max-width: 600px;
+      margin-bottom: 1.75rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 0.5px solid var(--border-mid);
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
+    }
+
+    .tag.green {
+      background: var(--green-light);
+      color: var(--green-dark);
+      border-color: var(--green-mid);
+    }
+
+    /* ── Section label ────────────────────────────── */
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 1rem;
+    }
+
+    /* ── Metrics grid ─────────────────────────────── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 3rem;
+    }
+
+    .metric {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: 1.1rem 1rem;
+    }
+
+    .metric-val {
+      font-family: 'DM Serif Display', serif;
+      font-size: 32px;
+      color: var(--text-primary);
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .metric-val span { font-size: 18px; color: var(--green); }
+
+    .metric-lbl {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* ── Two-col cards ────────────────────────────── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .card {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+    }
+
+    .card h3 {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+      color: var(--text-primary);
+    }
+
+    /* ── Pipeline steps ───────────────────────────── */
+    .pipe-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .pipe-step:last-child { border-bottom: none; }
+
+    .pipe-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--green-dark);
+      background: var(--green-light);
+      border-radius: 4px;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .pipe-text strong {
+      font-size: 13px;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .pipe-text p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ── Stack list ───────────────────────────────── */
+    .stack-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .stack-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+    }
+
+    .stack-name { font-size: 13px; font-weight: 500; }
+
+    .stack-role {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ── Bar chart ────────────────────────────────── */
+    .results-section { margin-bottom: 3rem; }
+
+    .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+
+    .bar-row { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+
+    .bar-label {
+      width: 200px;
+      flex-shrink: 0;
+      color: var(--text-secondary);
+      text-align: right;
+      line-height: 1.3;
+    }
+
+    .bar-track {
+      flex: 1;
+      height: 20px;
+      background: var(--bg-secondary);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .bar-fill { height: 100%; border-radius: 3px; }
+
+    .bar-pct {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-secondary);
+      width: 36px;
+    }
+
+    /* ── SQL tabs ─────────────────────────────────── */
+    .sql-block { margin-bottom: 3rem; }
+
+    .sql-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 1px;
+      flex-wrap: wrap;
+    }
+
+    .sql-tab {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      padding: 5px 14px;
+      border-radius: 4px 4px 0 0;
+      border: 0.5px solid var(--border);
+      border-bottom: none;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 0.15s;
+      user-select: none;
+    }
+
+    .sql-tab.active {
+      background: var(--bg);
+      color: var(--text-primary);
+      border-color: var(--border-mid);
+    }
+
+    .sql-pane {
+      display: none;
+      background: var(--bg);
+      border: 0.5px solid var(--border-mid);
+      border-radius: 0 var(--radius-md) var(--radius-md) var(--radius-md);
+      padding: 1.25rem 1.5rem;
+    }
+
+    .sql-pane.active { display: block; }
+
+    .sql-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+
+    .sql-code {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      line-height: 1.8;
+      color: var(--text-primary);
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .kw { color: var(--green); font-weight: 500; }
+    .cm { color: #BA7517; }
+
+    /* ── Interview cards ──────────────────────────── */
+    .interview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 3rem;
+    }
+
+    .interview-card {
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.1rem 1.25rem;
+      background: var(--bg);
+    }
+
+    .interviewer-role {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--green);
+      margin-bottom: 8px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .pitch-line {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* ── Resume line ──────────────────────────────── */
+    .resume-line {
+      background: var(--green-light);
+      border-left: 3px solid var(--green);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .rl-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--green-dark);
+      margin-bottom: 8px;
+    }
+
+    .resume-line p {
+      font-size: 14px;
+      color: var(--green-deeper);
+      line-height: 1.75;
+      font-style: italic;
+    }
+
+    /* ── File list ────────────────────────────────── */
+    .file-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 3rem;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+    }
+
+    .file-icon {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      font-weight: 500;
+    }
+
+    .file-icon.py  { background: #E1F5EE; color: #0F6E56; }
+    .file-icon.sql { background: #E6F1FB; color: #185FA5; }
+    .file-icon.png { background: #FAEEDA; color: #854F0B; }
+    .file-icon.md  { background: #F1EFE8; color: #5F5E5A; }
+
+    .file-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .file-desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* ── Author row ───────────────────────────────── */
+    .author-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-top: 2.5rem;
+      border-top: 0.5px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--green-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--green-dark);
+      flex-shrink: 0;
+    }
+
+    .author-name { font-size: 15px; font-weight: 500; }
+
+    .author-title { font-size: 12px; color: var(--text-secondary); margin-top: 1px; }
+
+    .github-btn {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 9px 16px;
+      border-radius: var(--radius-md);
+      border: 0.5px solid var(--border-mid);
+      background: var(--bg);
+      color: var(--text-primary);
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .github-btn:hover { background: var(--bg-secondary); }
+
+    /* ── Responsive ───────────────────────────────── */
+    @media (max-width: 700px) {
+      .hero h1 { font-size: 34px; }
+      .two-col { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+      .interview-grid { grid-template-columns: 1fr; }
+      .file-list { grid-template-columns: 1fr; }
+      .bar-label { width: 130px; font-size: 11px; }
+      .github-btn { margin-left: 0; margin-top: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Hero -->
+  <div class="hero">
+    <p class="eyebrow">Portfolio Project &middot; NLP &middot; Business Analytics</p>
+    <h1>Customer <em>Intelligence</em><br>Dashboard</h1>
+    <p class="hero-sub">A transformer-style NLP pipeline that classifies 10,000 Amazon customer reviews into complaint categories, scores sentiment, and surfaces business risk using Python, SQL, and data visualisation.</p>
+    <div class="tag-row">
+      <span class="tag green">100% free &middot; no API key</span>
+      <span class="tag">Python</span>
+      <span class="tag">scikit-learn</span>
+      <span class="tag">VADER NLP</span>
+      <span class="tag">pandas</span>
+      <span class="tag">matplotlib</span>
+      <span class="tag">SQL</span>
+    </div>
+  </div>
+
+  <!-- Metrics -->
+  <p class="section-label">Key results</p>
+  <div class="metrics-grid">
+  <div class="metric">
+    <div class="metric-val">3,673</div>
+    <div class="metric-lbl">high severity cases</div>
+  </div>
+  <div class="metric">
+    <div class="metric-val">4,954</div>
+    <div class="metric-lbl">negative sentiment</div>
+  </div>
+  <div class="metric">
+    <div class="metric-val">#1</div>
+    <div class="metric-lbl">top complaint: customer service</div>
+  </div>
+  <div class="metric">
+    <div class="metric-val">30k</div>
+    <div class="metric-lbl">dataset size</div>
+  </div>
+</div>
+
+  <!-- Pipeline + Stack -->
+  <div class="two-col">
+    <div class="card">
+      <h3>Pipeline architecture</h3>
+      <div class="pipe-step">
+        <div class="pipe-num">01</div>
+        <div class="pipe-text">
+          <strong>Data ingestion</strong>
+          <p>Load 10,000 Amazon reviews from Kaggle CSV via pandas</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">02</div>
+        <div class="pipe-text">
+          <strong>Sentiment scoring</strong>
+          <p>VADER lexicon scores each review as Positive / Neutral / Negative / Very Negative</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">03</div>
+        <div class="pipe-text">
+          <strong>Category classification</strong>
+          <p>TF-IDF + Logistic Regression assigns one of 8 complaint categories</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">04</div>
+        <div class="pipe-text">
+          <strong>Severity scoring</strong>
+          <p>Combines sentiment + star rating into High / Medium / Low risk</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">05</div>
+        <div class="pipe-text">
+          <strong>SQL analytics</strong>
+          <p>5 business queries extract insights from classified output</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">06</div>
+        <div class="pipe-text">
+          <strong>Dashboard output</strong>
+          <p>4-chart matplotlib dashboard saved as portfolio PNG</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Tech stack</h3>
+      <div class="stack-list">
+        <div class="stack-item"><span class="stack-name">pandas</span><span class="stack-role">data loading · cleaning</span></div>
+        <div class="stack-item"><span class="stack-name">VADER / NLTK</span><span class="stack-role">sentiment analysis</span></div>
+        <div class="stack-item"><span class="stack-name">scikit-learn</span><span class="stack-role">TF-IDF · logistic regression</span></div>
+        <div class="stack-item"><span class="stack-name">matplotlib</span><span class="stack-role">dashboard · visualisation</span></div>
+        <div class="stack-item"><span class="stack-name">SQL (SQLite)</span><span class="stack-role">business insight queries</span></div>
+        <div class="stack-item"><span class="stack-name">Amazon Reviews</span><span class="stack-role">Kaggle · real-world dataset</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bar chart -->
+  <div class="results-section">
+    <p class="section-label">Complaint category breakdown</p>
+    <div class="card" style="padding: 1.5rem 1.75rem;">
+      <div class="bar-chart" id="barChart"></div>
+    </div>
+  </div>
+
+  <!-- SQL tabs -->
+  <div class="sql-block">
+    <p class="section-label">SQL analysis queries</p>
+    <div class="sql-tabs">
+      <div class="sql-tab active" onclick="showTab(0)">Q1 &mdash; Sentiment by category</div>
+      <div class="sql-tab" onclick="showTab(1)">Q2 &mdash; Severity by product</div>
+      <div class="sql-tab" onclick="showTab(2)">Q3 &mdash; Model validation</div>
+      <div class="sql-tab" onclick="showTab(3)">Q4 &mdash; Monthly trend</div>
+      <div class="sql-tab" onclick="showTab(4)">Q5 &mdash; Risk summary</div>
+    </div>
+
+    <div class="sql-pane active" id="pane0">
+      <p class="sql-desc">Which complaint categories have the most negative sentiment?</p>
+      <div class="sql-code"><span class="kw">SELECT</span>
+  ai_category,
+  <span class="kw">COUNT</span>(*) <span class="kw">AS</span> review_count,
+  <span class="kw">ROUND</span>(100.0 * <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> ai_sentiment <span class="kw">IN</span> (<span class="cm">'Negative'</span>, <span class="cm">'Very Negative'</span>)
+    <span class="kw">THEN</span> 1 <span class="kw">ELSE</span> 0 <span class="kw">END</span>) / <span class="kw">COUNT</span>(*), 1) <span class="kw">AS</span> negative_pct,
+  <span class="kw">ROUND</span>(<span class="kw">AVG</span>(<span class="kw">CAST</span>(star_rating <span class="kw">AS FLOAT</span>)), 2) <span class="kw">AS</span> avg_stars
+<span class="kw">FROM</span> classified_reviews
+<span class="kw">GROUP BY</span> ai_category
+<span class="kw">ORDER BY</span> negative_pct <span class="kw">DESC</span>;</div>
+    </div>
+
+    <div class="sql-pane" id="pane1">
+      <p class="sql-desc">Which product types generate the most critical / high-severity issues?</p>
+      <div class="sql-code"><span class="kw">SELECT</span>
+  product_category,
+  <span class="kw">COUNT</span>(*) <span class="kw">AS</span> total_reviews,
+  <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> ai_severity = <span class="cm">'High'</span> <span class="kw">THEN</span> 1 <span class="kw">ELSE</span> 0 <span class="kw">END</span>) <span class="kw">AS</span> high_severity,
+  <span class="kw">ROUND</span>(100.0 * <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> ai_severity = <span class="cm">'High'</span>
+    <span class="kw">THEN</span> 1 <span class="kw">ELSE</span> 0 <span class="kw">END</span>) / <span class="kw">COUNT</span>(*), 1) <span class="kw">AS</span> high_severity_pct
+<span class="kw">FROM</span> classified_reviews
+<span class="kw">GROUP BY</span> product_category
+<span class="kw">ORDER BY</span> high_severity_pct <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> 10;</div>
+    </div>
+
+    <div class="sql-pane" id="pane2">
+      <p class="sql-desc">Does AI sentiment align with star ratings? Cross-validation of model output.</p>
+      <div class="sql-code"><span class="kw">SELECT</span>
+  star_rating,
+  ai_sentiment,
+  <span class="kw">COUNT</span>(*) <span class="kw">AS</span> count,
+  <span class="kw">ROUND</span>(100.0 * <span class="kw">COUNT</span>(*) / <span class="kw">SUM</span>(<span class="kw">COUNT</span>(*))
+    <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> star_rating), 1) <span class="kw">AS</span> pct
+<span class="kw">FROM</span> classified_reviews
+<span class="kw">GROUP BY</span> star_rating, ai_sentiment
+<span class="kw">ORDER BY</span> star_rating, count <span class="kw">DESC</span>;</div>
+    </div>
+
+    <div class="sql-pane" id="pane3">
+      <p class="sql-desc">Are complaints growing or shrinking over time? Monthly negative review trend.</p>
+      <div class="sql-code"><span class="kw">SELECT</span>
+  <span class="kw">SUBSTR</span>(review_date, 1, 7) <span class="kw">AS</span> month,
+  <span class="kw">COUNT</span>(*) <span class="kw">AS</span> total,
+  <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> ai_sentiment <span class="kw">IN</span> (<span class="cm">'Negative'</span>, <span class="cm">'Very Negative'</span>)
+    <span class="kw">THEN</span> 1 <span class="kw">ELSE</span> 0 <span class="kw">END</span>) <span class="kw">AS</span> negative_count
+<span class="kw">FROM</span> classified_reviews
+<span class="kw">GROUP BY</span> month
+<span class="kw">ORDER BY</span> month;</div>
+    </div>
+
+    <div class="sql-pane" id="pane4">
+      <p class="sql-desc">Executive risk summary with recommended escalation actions per category.</p>
+      <div class="sql-code"><span class="kw">SELECT</span>
+  ai_category <span class="kw">AS</span> complaint_type,
+  <span class="kw">COUNT</span>(*) <span class="kw">AS</span> volume,
+  <span class="kw">ROUND</span>(<span class="kw">AVG</span>(<span class="kw">CAST</span>(star_rating <span class="kw">AS FLOAT</span>)), 1) <span class="kw">AS</span> avg_rating,
+  <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> ai_severity = <span class="cm">'High'</span> <span class="kw">THEN</span> 1 <span class="kw">ELSE</span> 0 <span class="kw">END</span>) <span class="kw">AS</span> high_risk_count,
+  <span class="kw">CASE</span>
+    <span class="kw">WHEN</span> <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> ai_severity = <span class="cm">'High'</span> <span class="kw">THEN</span> 1 <span class="kw">ELSE</span> 0 <span class="kw">END</span>) > 50
+      <span class="kw">THEN</span> <span class="cm">'URGENT - escalate to product team'</span>
+    <span class="kw">WHEN</span> <span class="kw">SUM</span>(<span class="kw">CASE WHEN</span> ai_severity = <span class="cm">'High'</span> <span class="kw">THEN</span> 1 <span class="kw">ELSE</span> 0 <span class="kw">END</span>) > 20
+      <span class="kw">THEN</span> <span class="cm">'MONITOR - flag for weekly review'</span>
+    <span class="kw">ELSE</span> <span class="cm">'OK - standard support queue'</span>
+  <span class="kw">END AS</span> recommended_action
+<span class="kw">FROM</span> classified_reviews
+<span class="kw">GROUP BY</span> ai_category
+<span class="kw">ORDER BY</span> high_risk_count <span class="kw">DESC</span>;</div>
+    </div>
+  </div>
+
+  <!-- Interview pitches -->
+  <p class="section-label">Interview pitch by role</p>
+  <div class="interview-grid">
+    <div class="interview-card">
+      <div class="interviewer-role">Data Analyst</div>
+      <p class="pitch-line">"Analysed 30,000 reviews; identified customer service as the top complaint category, with 3,673 high-severity and 4,954 negative sentiment cases .Using NLP, built SQL insight queries and a visual dashboard showing complaint trends and severity distribution."</p>
+    </div>
+    <div class="interview-card">
+      <div class="interviewer-role">Business Analyst</div>
+      <p class="pitch-line">"Surfaced top complaint categories and severity patterns across product lines to recommend support process improvements."</p>
+    </div>
+    <div class="interview-card">
+      <div class="interviewer-role">Data Scientist</div>
+      <p class="pitch-line">"Applied TF-IDF + Logistic Regression with VADER sentiment scoring; validated model output against star ratings for accuracy."</p>
+    </div>
+  </div>
+
+  <!-- Resume line -->
+  <div class="resume-line">
+    <div class="rl-label">Resume line</div>
+    <p>""Built an NLP-powered customer intelligence pipeline analysing 30,000 Amazon reviews; identified customer service as the top complaint driver, with 3,673 high-severity cases and 4,954 negative sentiment reviews, using Python, SQL, and machine learning.""</p>
+  </div>
+
+  <!-- File list -->
+  <p class="section-label">Repository files</p>
+  <div class="file-list">
+    <div class="file-item">
+      <div class="file-icon py">.py</div>
+      <div>
+        <div class="file-name">classifier.py</div>
+        <div class="file-desc">NLP pipeline · sentiment · category · severity</div>
+      </div>
+    </div>
+    <div class="file-item">
+      <div class="file-icon sql">.sql</div>
+      <div>
+        <div class="file-name">analysis.sql</div>
+        <div class="file-desc">5 business insight queries</div>
+      </div>
+    </div>
+    <div class="file-item">
+      <div class="file-icon png">.png</div>
+      <div>
+        <div class="file-name">dashboard.png</div>
+        <div class="file-desc">4-chart visual output · add to output/ folder</div>
+      </div>
+    </div>
+    <div class="file-item">
+      <div class="file-icon md">.md</div>
+      <div>
+        <div class="file-name">README.md</div>
+        <div class="file-desc">Project write-up with results table</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Author -->
+  <div class="author-row">
+    <div class="avatar">PM</div>
+    <div>
+      <div class="author-name">Parvathy Menon</div>
+      <div class="author-title">Senior Business Analyst &middot; Data &amp; Product Operations</div>
+    </div>
+    <a class="github-btn" href="https://github.com/Parvathyamenon" target="_blank" rel="noopener">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+        0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+        -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+        .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+        -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0
+        1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82
+        1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01
+        1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+      </svg>
+      github.com/Parvathyamenon
+    </a>
+  </div>
+
+</div>
+
+<script>
+  // Bar chart data — update percentages with your real results after running classifier.py
+  const bars = [
+  { label: "Customer service complaint", pct: 45.5, color: "#DC2626" },
+  { label: "Positive experience",        pct: 33.2, color: "#1D9E75" },
+  { label: "Delivery / shipping",        pct: 8.0,  color: "#D85A30" },
+  { label: "Billing / payment",          pct: 7.9,  color: "#378ADD" },
+  { label: "Feature request",            pct: 2.8,  color: "#7F77DD" },
+  { label: "Product defect / quality",   pct: 2.2,  color: "#BA7517" },
+  { label: "Return / refund",            pct: 0.4,  color: "#888780" },
+  { label: "Account / access",           pct: 0.1,  color: "#B4B2A9" },
+];
+
+  const chart = document.getElementById('barChart');
+  bars.forEach(b => {
+    const row = document.createElement('div');
+    row.className = 'bar-row';
+    row.innerHTML = `
+      <div class="bar-label">${b.label}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:0%; background:${b.color}; transition: width 0.9s ease;"></div>
+      </div>
+      <div class="bar-pct">${b.pct}%</div>`;
+    chart.appendChild(row);
+  });
+
+  // Animate bars on load
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.bar-fill').forEach((el, i) => {
+        el.style.width = bars[i].pct + '%';
+      });
+    });
+  });
+
+  // SQL tab switcher
+  function showTab(i) {
+    document.querySelectorAll('.sql-tab').forEach((t, j) => t.classList.toggle('active', i === j));
+    document.querySelectorAll('.sql-pane').forEach((p, j) => p.classList.toggle('active', i === j));
+  }
+</script>
+</body>
+</html>
